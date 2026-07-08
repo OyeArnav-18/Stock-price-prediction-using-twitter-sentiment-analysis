@@ -1,4 +1,3 @@
-app_code = '''
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -223,22 +222,18 @@ st.markdown(css, unsafe_allow_html=True)
 @st.cache_resource
 def load_analyser():
     a = SentimentIntensityAnalyzer()
-    # ── EXPANDED FINANCIAL LEXICON ──
-    # Key fix: "crushed" was negative in standard VADER but means
-    # "exceeded expectations" in financial context
     a.lexicon.update({
-        # Positive — earnings / performance
-        "crushed":      2.8,   # "crushed it / crushed earnings" = beat expectations
+        "crushed":      2.8,
         "crushing":     2.5,
-        "smashed":      2.5,   # "smashed estimates"
-        "destroyed":    2.0,   # "destroyed forecasts" = very positive in finance
-        "killing":      2.0,   # "killing it this quarter"
-        "blew":         2.0,   # "blew past estimates"
+        "smashed":      2.5,
+        "destroyed":    2.0,
+        "killing":      2.0,
+        "blew":         2.0,
         "blowing":      1.8,
         "beat":         2.0,
         "beats":        2.0,
         "beat out":     2.0,
-        "topped":       1.8,   # "topped estimates"
+        "topped":       1.8,
         "exceeded":     2.0,
         "outpaced":     1.8,
         "surged":       2.5,
@@ -260,11 +255,11 @@ def load_analyser():
         "strong":       1.5,
         "strength":     1.5,
         "monster":      1.5,
-        "load up":      1.8,   # "load up on shares" = buy signal
+        "load up":      1.8,
         "loading up":   1.8,
         "buy":          1.5,
         "buying":       1.5,
-        "revenue":      1.0,   # revenue mentioned positively in context
+        "revenue":      1.0,
         "profit":       1.5,
         "profits":      1.5,
         "earnings":     0.8,
@@ -273,7 +268,6 @@ def load_analyser():
         "upside":       1.5,
         "undervalued":  1.5,
         "opportunity":  1.2,
-        # Negative
         "bearish":      -2.5,
         "plummeting":   -2.8,
         "plunged":      -2.5,
@@ -306,7 +300,6 @@ def load_analyser():
 
 analyser = load_analyser()
 
-# ── HEADER ──
 st.markdown(f"""
 <div style="background:linear-gradient(135deg,#1A3A5C 0%,#2563A8 100%);
             padding:2rem 2.5rem;border-radius:12px;margin-bottom:1.5rem;">
@@ -319,9 +312,8 @@ st.markdown(f"""
         Guide: Neeraj Sharma, Asst. Professor, Dept. of CS&amp;IT, MVSREC</p>
 </div>""", unsafe_allow_html=True)
 
-# ── SIDEBAR ──
 with st.sidebar:
-    st.markdown(f"### {\'🌙 Dark Mode ON\' if D else \'☀️ Light Mode\'}")
+    st.markdown(f"### {'🌙 Dark Mode ON' if D else '☀️ Light Mode'}")
     if st.button("Toggle Dark / Light Mode", use_container_width=True):
         st.session_state.dark = not st.session_state.dark
         st.rerun()
@@ -347,11 +339,8 @@ FIG_BG = "#0F172A" if D else "white"
 FIG_TX = "#F1F5F9" if D else "#334155"
 FIG_GR = "#334155" if D else "#F1F5F9"
 
-# ═══════════════════════════════════════════
-# PAGE 1 — PROJECT OVERVIEW
-# ═══════════════════════════════════════════
 if page == "Project Overview":
-    st.markdown(\'<p class="section-header">Project Overview</p>\', unsafe_allow_html=True)
+    st.markdown('<p class="section-header">Project Overview</p>', unsafe_allow_html=True)
     c1,c2,c3,c4 = st.columns(4)
     for col,num,lbl in zip([c1,c2,c3,c4],
         ["5,791","987","3","79.2%"],
@@ -406,11 +395,8 @@ if page == "Project Overview":
                 <div style="font-size:0.85rem;color:{SUB}">{imp}</div>
             </div>""", unsafe_allow_html=True)
 
-# ═══════════════════════════════════════════
-# PAGE 2 — LIVE SENTIMENT ANALYSER
-# ═══════════════════════════════════════════
 elif page == "Live Sentiment Analyser":
-    st.markdown(\'<p class="section-header">Live Tweet Sentiment Analyser</p>\', unsafe_allow_html=True)
+    st.markdown('<p class="section-header">Live Tweet Sentiment Analyser</p>', unsafe_allow_html=True)
     st.markdown("""<div class="info-box">
         Type any tweet and see how our sentiment engine scores it. Enhanced with an
         expanded financial lexicon to correctly interpret stock market language like
@@ -419,7 +405,7 @@ elif page == "Live Sentiment Analyser":
     st.write("")
 
     user_input = st.text_area("Enter a tweet:", height=110,
-        placeholder=\'e.g. "MSFT crushing earnings expectations, this stock is unstoppable"\',
+        placeholder='e.g. "MSFT crushing earnings expectations, this stock is unstoppable"',
         label_visibility="collapsed")
     analyse_btn = st.button("Analyse Sentiment", type="primary")
 
@@ -437,7 +423,7 @@ elif page == "Live Sentiment Analyser":
 
     if "ex" in st.session_state:
         user_input = st.session_state["ex"]
-        st.info(f\'Example loaded: "{user_input}"\')
+        st.info(f'Example loaded: "{user_input}"')
 
     if (analyse_btn or "ex" in st.session_state) and user_input:
         scores   = analyser.polarity_scores(user_input)
@@ -447,13 +433,13 @@ elif page == "Live Sentiment Analyser":
         else:                    label,css = "NEUTRAL", "sentiment-neutral";  impact = "No clear directional signal. Factual or informational content."
 
         st.write("")
-        st.markdown(f\'<div class="{css}">Sentiment: {label} &nbsp;|&nbsp; Score: {compound:+.4f}</div>\', unsafe_allow_html=True)
+        st.markdown(f'<div class="{css}">Sentiment: {label} &nbsp;|&nbsp; Score: {compound:+.4f}</div>', unsafe_allow_html=True)
         st.write("")
         co1,co2,co3,co4 = st.columns(4)
         co1.metric("Compound", f"{compound:+.4f}")
-        co2.metric("Positive", f"{scores[\'pos\']:.3f}")
-        co3.metric("Negative", f"{scores[\'neg\']:.3f}")
-        co4.metric("Neutral",  f"{scores[\'neu\']:.3f}")
+        co2.metric("Positive", f"{scores['pos']:.3f}")
+        co3.metric("Negative", f"{scores['neg']:.3f}")
+        co4.metric("Neutral",  f"{scores['neu']:.3f}")
 
         fig,ax = plt.subplots(figsize=(9,1.6))
         fig.patch.set_facecolor(FIG_BG); ax.set_facecolor(FIG_BG)
@@ -471,20 +457,17 @@ elif page == "Live Sentiment Analyser":
         for sp in ax.spines.values(): sp.set_visible(False)
         plt.tight_layout(); st.pyplot(fig); plt.close()
 
-        st.markdown(f\'<div class="info-box" style="margin-top:0.5rem"><strong>Market Impact:</strong> {impact}</div>\', unsafe_allow_html=True)
+        st.markdown(f'<div class="info-box" style="margin-top:0.5rem"><strong>Market Impact:</strong> {impact}</div>', unsafe_allow_html=True)
         if "ex" in st.session_state: del st.session_state["ex"]
 
-# ═══════════════════════════════════════════
-# PAGE 3 — MODEL RESULTS
-# ═══════════════════════════════════════════
 elif page == "Model Results":
-    st.markdown(\'<p class="section-header">Model Performance Results</p>\', unsafe_allow_html=True)
+    st.markdown('<p class="section-header">Model Performance Results</p>', unsafe_allow_html=True)
     c1,c2 = st.columns(2)
     with c1:
         st.markdown("#### RMSE Comparison — Lower is Better")
         fig,ax = plt.subplots(figsize=(6,4))
         fig.patch.set_facecolor(FIG_BG); ax.set_facecolor(FIG_BG)
-        mdls  = ["ARIMA\\n(Price Only)","Random Forest\\n(Price+Sentiment)","LSTM\\n(Sequences+Sentiment)"]
+        mdls  = ["ARIMA\n(Price Only)","Random Forest\n(Price+Sentiment)","LSTM\n(Sequences+Sentiment)"]
         rmses = [57.74,18.80,12.00]
         cols  = ["#EF4444","#F59E0B","#16A34A"]
         bars  = ax.bar(mdls,rmses,color=cols,width=0.45,edgecolor=FIG_BG,linewidth=1.5)
@@ -522,7 +505,7 @@ elif page == "Model Results":
         fig,ax = plt.subplots(figsize=(5,4))
         fig.patch.set_facecolor(FIG_BG)
         ax.pie([2138,2352,1301],
-               labels=["Positive\\n36.9%","Neutral\\n40.6%","Negative\\n22.5%"],
+               labels=["Positive\n36.9%","Neutral\n40.6%","Negative\n22.5%"],
                colors=["#16A34A","#94A3B8","#DC2626"],startangle=90,
                wedgeprops={"edgecolor":FIG_BG,"linewidth":2.5},
                textprops={"fontsize":10,"color":FIG_TX})
@@ -536,11 +519,8 @@ elif page == "Model Results":
         <strong>Key insight:</strong> Majority-neutral tweets explain why raw sentiment had low feature importance without date-matched data.
         </div>""", unsafe_allow_html=True)
 
-# ═══════════════════════════════════════════
-# PAGE 4 — BUY / HOLD / SELL
-# ═══════════════════════════════════════════
 elif page == "Buy / Hold / Sell Signal":
-    st.markdown(\'<p class="section-header">Buy / Hold / Sell Signal Generator</p>\', unsafe_allow_html=True)
+    st.markdown('<p class="section-header">Buy / Hold / Sell Signal Generator</p>', unsafe_allow_html=True)
     st.markdown("""<div class="info-box">
         Combines tweet sentiment (40%), moving average crossover (40%), and price momentum (20%).
         Fill in a tweet and current price data, then click Generate Signal.
@@ -550,7 +530,7 @@ elif page == "Buy / Hold / Sell Signal":
     with c1:
         st.markdown("#### Step 1 — Enter a Tweet")
         tweet_input = st.text_area("Tweet:",label_visibility="collapsed",height=100,
-            placeholder=\'e.g. "MSFT crushed earnings again, revenue up 17% year on year"\')
+            placeholder='e.g. "MSFT crushed earnings again, revenue up 17% year on year"')
         st.markdown("#### Step 2 — Enter Price Data")
         cur  = st.number_input("Current stock price ($)", min_value=1.0,max_value=5000.0,value=370.0,step=0.5)
         ma5  = st.number_input("5-day moving average ($)",min_value=1.0,max_value=5000.0,value=365.0,step=0.5)
@@ -576,7 +556,7 @@ elif page == "Buy / Hold / Sell Signal":
                 elif sig=="SELL": rs = f"Negative tweet sentiment ({cmp:+.3f}) combined with {mv.lower()} and price {pv.lower()} suggests downward pressure."
                 else:             rs = f"Mixed signals — tweet sentiment is {sv.lower()} ({cmp:+.3f}) but {mv.lower()}. No clear edge — wait for stronger signal."
                 st.write("")
-                st.markdown(f\'<div class="{css}">{sig}</div>\', unsafe_allow_html=True)
+                st.markdown(f'<div class="{css}">{sig}</div>', unsafe_allow_html=True)
                 st.write("")
                 st.markdown(f"""<table class="styled-table">
                 <tr><th>Component</th><th>Value</th><th>Verdict</th></tr>
@@ -586,9 +566,9 @@ elif page == "Buy / Hold / Sell Signal":
                 <tr><td><strong>Combined Score</strong></td><td><strong>{cmb:+.3f}</strong></td><td><strong>{sig}</strong></td></tr>
                 </table>""", unsafe_allow_html=True)
                 st.write("")
-                st.markdown(f\'<div class="info-box"><strong>Reasoning:</strong> {rs}</div>\', unsafe_allow_html=True)
+                st.markdown(f'<div class="info-box"><strong>Reasoning:</strong> {rs}</div>', unsafe_allow_html=True)
                 st.write("")
-                st.markdown(\'<div class="warning-box">Disclaimer: Research project for educational purposes only. Do not make real financial decisions based on this tool.</div>\', unsafe_allow_html=True)
+                st.markdown('<div class="warning-box">Disclaimer: Research project for educational purposes only. Do not make real financial decisions based on this tool.</div>', unsafe_allow_html=True)
         else:
             st.markdown(f"""<br><br>
             <div style="text-align:center;color:{SUB};font-size:1rem;
@@ -596,11 +576,8 @@ elif page == "Buy / Hold / Sell Signal":
                 Enter a tweet and price data,<br>then click <strong>Generate Signal</strong>
             </div>""", unsafe_allow_html=True)
 
-# ═══════════════════════════════════════════
-# PAGE 5 — HOW IT WORKS
-# ═══════════════════════════════════════════
 elif page == "How It Works":
-    st.markdown(\'<p class="section-header">How It Works — Plain English</p>\', unsafe_allow_html=True)
+    st.markdown('<p class="section-header">How It Works — Plain English</p>', unsafe_allow_html=True)
     steps = [
         ("Step 1 — Data Collection","We collected 5,791 tweets about Microsoft, Apple, and Google stocks, plus 4 years of daily stock prices (2020-2024) from Yahoo Finance. Each trading day has 5 numbers: Open, High, Low, Close, and Volume."),
         ("Step 2 — Text Cleaning","Raw tweets are full of URLs, @mentions, and hashtags. We strip all noise, keeping only emotional words. Example: MSFT is going to the moon! http://bit.ly becomes: msft is going to the moon."),
@@ -612,7 +589,7 @@ elif page == "How It Works":
     ]
     for title,desc in steps:
         with st.expander(title):
-            st.markdown(f\'<div style="color:{TEXT};font-size:0.97rem;line-height:1.7">{desc}</div>\', unsafe_allow_html=True)
+            st.markdown(f'<div style="color:{TEXT};font-size:0.97rem;line-height:1.7">{desc}</div>', unsafe_allow_html=True)
     st.markdown("---")
     c1,c2 = st.columns(2)
     with c1:
@@ -631,13 +608,8 @@ elif page == "How It Works":
         Results tested on MSFT only — generalisation needs further testing.
         </div>""", unsafe_allow_html=True)
     st.markdown("---")
-    st.markdown(f\'<div style="color:{SUB};font-size:0.9rem;text-align:center;padding:1rem">\'
-        \'Arnav Bhardwaj &amp; Suraj Pratap Singh &nbsp;|&nbsp;\'
-        \'Guide: Neeraj Sharma, Asst. Professor, CS&amp;IT &nbsp;|&nbsp;\'
-        \'MVSREC &nbsp;·&nbsp; BE CSIT &nbsp;·&nbsp; Sem IV 2025-2026 &nbsp;·&nbsp; Batch 23\'
-        \'</div>\', unsafe_allow_html=True)
-'''
-
-with open("/content/stock_sentiment_app.py", "w") as f:
-    f.write(app_code)
-print("✅ App written to /content/stock_sentiment_app.py")
+    st.markdown(f'<div style="color:{SUB};font-size:0.9rem;text-align:center;padding:1rem">'
+        'Arnav Bhardwaj &amp; Suraj Pratap Singh &nbsp;|&nbsp;'
+        'Guide: Neeraj Sharma, Asst. Professor, CS&amp;IT &nbsp;|&nbsp;'
+        'MVSREC &nbsp;·&nbsp; BE CSIT &nbsp;·&nbsp; Sem IV 2025-2026 &nbsp;·&nbsp; Batch 23'
+        '</div>', unsafe_allow_html=True)
