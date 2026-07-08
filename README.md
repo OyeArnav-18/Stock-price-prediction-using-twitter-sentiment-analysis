@@ -1,8 +1,8 @@
 # Stock Price Prediction Using Twitter Sentiment Analysis
 
-**MVSREC · BE CSE Sec A · Batch 22**
+**MVSREC · BE CSIT · Batch 23**
 **Team:** Arnav Bhardwaj (245124751003) · Suraj Pratap Singh (245124751061)
-**Guide:** Neeraj Sharma, Asst. Professor, Dept. of CSE, MVSREC
+**Guide:** Neeraj Sharma, Asst. Professor, Dept. of CSIT, MVSREC
 
 ---
 
@@ -23,7 +23,7 @@ Microsoft (MSFT) stock data from 2020–2024.
 ## What We Built
 
 - **Data Pipeline** — Tweet collection (5,791 tweets) + stock price data (987 trading days)
-- **NLP Module** — VADER sentiment analyser enhanced with financial lexicon
+- **NLP Module** — VADER sentiment analyser enhanced with a custom financial lexicon
 - **3 Predictive Models** — ARIMA, Random Forest, LSTM neural network
 - **Streamlit Web App** — Interactive dashboard with live sentiment analysis and Buy/Hold/Sell signals
 
@@ -31,13 +31,13 @@ Microsoft (MSFT) stock data from 2020–2024.
 
 | Category | Tools |
 |---|---|
-| Language | Python 3.10 |
+| Language | Python 3.11 |
 | Deep Learning | TensorFlow / Keras |
 | ML | Scikit-learn |
 | NLP | NLTK, VADER Sentiment |
 | Time Series | Statsmodels (ARIMA) |
 | Data | Pandas, NumPy, yfinance |
-| Visualisation | Matplotlib, Seaborn |
+| Visualisation | Matplotlib |
 | Web App | Streamlit |
 
 ## How to Run
@@ -47,7 +47,7 @@ streamlit run app.py
 
 ## Project Structure
 
-app.py, requirements.txt, .streamlit/config.toml, README.md
+app.py, requirements.txt, runtime.txt, .streamlit/config.toml, README.md
 
 ## Core Finding
 
@@ -67,5 +67,10 @@ Adding Twitter sentiment to a stock prediction model reduces prediction error by
 - Extend to 50+ stocks with portfolio-level aggregation
 - Intraday minute-level prediction pipeline
 
+## Recent Fixes
+
+- **Sentiment scoring bug** — VADER's default lexicon scored finance slang like "crushed" and "load up" as negative/neutral, when in financial context they signal strongly positive sentiment (e.g. "crushed earnings" = beat expectations). Fixed by expanding the custom lexicon to 50+ finance-specific terms, including `crushed`, `smashed`, `load up`, `revenue`, `buy`, `profit`, and more. A tweet like "AAPL crushed it, revenue up 15%, time to load up on shares" now correctly scores positive.
+- **Sidebar toggle disappearing** — custom CSS was unintentionally hiding Streamlit's collapsed-sidebar control button. Fixed by explicitly targeting `[data-testid="stSidebarCollapsedControl"]` and forcing it to stay visible, fixed-position, and styled, whether the sidebar is open or collapsed.
+
 ---
-Theme-based Project · Sem III 2025-2026 · MVSREC
+Theme-based Project · Sem IV 2025-2026 · MVSREC
